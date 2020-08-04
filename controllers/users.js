@@ -8,10 +8,19 @@ const { JWT_SECRET, NODE_ENV } = process.env;
 const NotFoundError = require('../errors/not-found-err');
 const UniqueUserError = require('../errors/unique-user-err');
 
-module.exports.getUsers = (req, res, next) => {
+// module.exports.getUsers = (req, res, next) => {
+//   user
+//     .find({})
+//     .then((users) => res.send({ data: users }))
+//     .catch(next);
+// };
+
+module.exports.getMe = (req, res, next) => {
   user
-    .find({})
-    .then((users) => res.send({ data: users }))
+    .findById(req.user._id)
+    .then((result) => {
+      res.send({ name: result.name, email: result.email });
+    })
     .catch(next);
 };
 
@@ -46,18 +55,18 @@ module.exports.createUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUser = (req, res, next) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-    throw new BadRequest('Некорректный ID');
-  }
-  user
-    .findById(req.params.userId)
-    .orFail(new NotFoundError('Нет пользователя с таким id'))
-    .then((userr) => {
-      res.send(userr);
-    })
-    .catch(next);
-};
+// module.exports.getUser = (req, res, next) => {
+//   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+//     throw new BadRequest('Некорректный ID');
+//   }
+//   user
+//     .findById(req.params.userId)
+//     .orFail(new NotFoundError('Нет пользователя с таким id'))
+//     .then((userr) => {
+//       res.send(userr);
+//     })
+//     .catch(next);
+// };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;

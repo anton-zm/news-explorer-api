@@ -4,12 +4,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const validateUrl = require('./urlRegex');
-const cardsRoute = require('./routes/cards');
+// const cardsRoute = require('./routes/cards');
+const articleRoute = require('./routes/articles');
 const usersRoute = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
+const articleRouter = require('./routes/articles');
 
 const { PORT = 3000 } = process.env;
 
@@ -18,7 +20,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect('mongodb://localhost:27017/diploma', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -26,11 +28,11 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(requestLogger);
 
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
+// app.get('/crash-test', () => {
+//   setTimeout(() => {
+//     throw new Error('Сервер сейчас упадёт');
+//   }, 0);
+// });
 
 app.post(
   '/signin',
@@ -49,17 +51,19 @@ app.post(
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
       name: Joi.string().required().min(2).max(30),
-      about: Joi.string().required().min(2).max(30),
-      avatar: Joi.string()
-        .required()
-        .pattern(validateUrl)
-        .error(() => new Error('Это не похоже на ссылку')),
+      // about: Joi.string().required().min(2).max(30),
+      // avatar: Joi.string()
+      //   .required()
+      //   .pattern(validateUrl)
+      //   .error(() => new Error('Это не похоже на ссылку')),
     }),
   }),
   createUser // eslint-disable-line
 );
 
-app.use('/cards', auth, cardsRoute);
+// app.use('/cards', auth, cardsRoute);
+
+app.use('/articles', auth, articleRoute);
 app.use('/users', auth, usersRoute);
 
 app.use((req, res, next) => {

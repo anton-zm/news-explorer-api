@@ -11,20 +11,7 @@ const usersSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
   },
-  about: {
-    type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
-  },
-  avatar: {
-    type: String,
-    validate: {
-      validator: (v) => validator.isURL(v),
-      message: 'Нужно ввести ссылку, а не вот это вот всё..',
-    },
-    required: true,
-  },
+
   email: {
     type: String,
     required: true,
