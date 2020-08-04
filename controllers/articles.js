@@ -28,3 +28,22 @@ module.exports.createArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.deleteArticle = (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.articleId)) {
+    throw new BadRequest('Некорректный ID');
+  }
+  return article
+    .findById(req.params.articleId)
+    .orFail(new NotFoundError('Статья не найдена'))
+    .then((art) => {
+      if (!(art.owner.toString() === req.user._id)) {
+        throw new RightsError('Вы не можете удалять чужие статьи');
+      }
+      return article
+        .findByIdAndDelete(art._id)
+        .then((delArt) => res.send({ data: delArt, message: 'Статья  удалена' }))
+        .catch(next);
+    })
+    .catch(next);
+};
