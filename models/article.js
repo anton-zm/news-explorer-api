@@ -22,13 +22,30 @@ const articleSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
   },
-  source: { type: String, required: true, minlength: 2 },
+  source: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
   link: {
     type: String,
     validate: {
       validator: (v) => validator.isURL(v),
       message: 'Это не похоже на URL',
     },
+    required: true,
+  },
+  image: {
+    type: String,
+    validate: {
+      validator: (v) => validator.isURL(v),
+      message: 'Это не похоже на URL',
+    },
+    required: true,
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
     required: true,
   },
 });

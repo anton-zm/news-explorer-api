@@ -1,19 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const user = require('../models/user');
 const BadRequest = require('../errors/bad-req-err');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
-const NotFoundError = require('../errors/not-found-err');
 const UniqueUserError = require('../errors/unique-user-err');
-
-// module.exports.getUsers = (req, res, next) => {
-//   user
-//     .find({})
-//     .then((users) => res.send({ data: users }))
-//     .catch(next);
-// };
 
 module.exports.getMe = (req, res, next) => {
   user
@@ -25,7 +16,7 @@ module.exports.getMe = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body; // eslint-disable-line
+  const { name, email, password } = req.body;
   if (!password || password.length < 8) {
     throw new BadRequest('Нужно задать пароль. Длина пароля не менее 8 символов.');
   }
@@ -33,14 +24,16 @@ module.exports.createUser = (req, res, next) => {
     .hash(password, 10)
     .then((hash) => {
       user
-        .create({
-          name,
-          about,
-          avatar,
-          email,
-          password: hash,
-        })
-        .then((users) => res.send({ data: { name: users.name, about: users.about, avatar: users.avatar, email: users.email } })) // eslint-disable-line
+        .create({ name, email, password: hash })
+        .then((users) =>
+          res.send({
+            data: {
+              name: users.name,
+              email: users.email,
+            },
+          })
+        )
+
         .catch((err) => {
           if (err.name === 'ValidationError') {
             if (err.errors.email && err.errors.email.kind === 'unique') {
@@ -54,19 +47,6 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
-
-// module.exports.getUser = (req, res, next) => {
-//   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-//     throw new BadRequest('Некорректный ID');
-//   }
-//   user
-//     .findById(req.params.userId)
-//     .orFail(new NotFoundError('Нет пользователя с таким id'))
-//     .then((userr) => {
-//       res.send(userr);
-//     })
-//     .catch(next);
-// };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;

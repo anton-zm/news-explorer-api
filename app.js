@@ -5,13 +5,12 @@ const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const validateUrl = require('./urlRegex');
 // const cardsRoute = require('./routes/cards');
-const articleRoute = require('./routes/articles');
+const articleRouter = require('./routes/articles');
 const usersRoute = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
-const articleRouter = require('./routes/articles');
 
 const { PORT = 3000 } = process.env;
 
@@ -28,12 +27,6 @@ mongoose.connect('mongodb://localhost:27017/diploma', {
 
 app.use(requestLogger);
 
-// app.get('/crash-test', () => {
-//   setTimeout(() => {
-//     throw new Error('Сервер сейчас упадёт');
-//   }, 0);
-// });
-
 app.post(
   '/signin',
   celebrate({
@@ -42,7 +35,7 @@ app.post(
       password: Joi.string().required().min(8),
     }),
   }),
-  login // eslint-disable-line
+  login
 );
 app.post(
   '/signup',
@@ -58,12 +51,12 @@ app.post(
       //   .error(() => new Error('Это не похоже на ссылку')),
     }),
   }),
-  createUser // eslint-disable-line
+  createUser
 );
 
 // app.use('/cards', auth, cardsRoute);
 
-app.use('/articles', auth, articleRoute);
+app.use('/articles', auth, articleRouter);
 app.use('/users', auth, usersRoute);
 
 app.use((req, res, next) => {
@@ -73,12 +66,12 @@ app.use((req, res, next) => {
 app.use(errorLogger);
 app.use(errors());
 
-/* eslint-disable*/
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
     message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
   });
+  next();
 });
 
 app.listen(PORT, () => {
