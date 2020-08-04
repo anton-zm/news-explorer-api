@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const validateUrl = require('./urlRegex');
-// const cardsRoute = require('./routes/cards');
+
 const articleRouter = require('./routes/articles');
 const usersRoute = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
