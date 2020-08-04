@@ -47,3 +47,10 @@ module.exports.deleteArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.getArticles = (req, res, next) => {
+  article
+    .find({ owner: req.user._id })
+    .then((arts) => res.send({ data: arts }))
+    .catch(next);
+};
