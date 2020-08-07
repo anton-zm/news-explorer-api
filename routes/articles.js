@@ -1,7 +1,6 @@
 const articleRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { createArticle, deleteArticle, getArticles } = require('../controllers/articles');
-const validateUrl = require('../urlRegex');
 
 articleRouter.get('/', getArticles);
 articleRouter.post(
@@ -13,14 +12,8 @@ articleRouter.post(
       text: Joi.string().required(),
       date: Joi.string().required(),
       source: Joi.string().required(),
-      link: Joi.string()
-        .required()
-        .pattern(validateUrl)
-        .error(() => new Error('В ссылке на статью есть ошибка')),
-      image: Joi.string()
-        .required()
-        .pattern(validateUrl)
-        .error(() => new Error('В ссылке на изображение статьи есть ошибка')),
+      link: Joi.string().required(),
+      image: Joi.string().required(),
     }),
   }),
   createArticle

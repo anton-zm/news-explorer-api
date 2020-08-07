@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const validateUrl = require('./urlRegex');
 
 const articleRouter = require('./routes/articles');
 const usersRoute = require('./routes/users');
@@ -44,17 +43,10 @@ app.post(
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
       name: Joi.string().required().min(2).max(30),
-      // about: Joi.string().required().min(2).max(30),
-      // avatar: Joi.string()
-      //   .required()
-      //   .pattern(validateUrl)
-      //   .error(() => new Error('Это не похоже на ссылку')),
     }),
   }),
   createUser
 );
-
-// app.use('/cards', auth, cardsRoute);
 
 app.use('/articles', auth, articleRouter);
 app.use('/users', auth, usersRoute);
