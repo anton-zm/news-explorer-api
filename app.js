@@ -11,6 +11,7 @@ const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
 const { errorsCenter } = require('./errors/errorsCenter');
+const { reqLimit } = require('./middlewares/rateLimiter');
 
 const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/diploma' } = process.env;
 
@@ -35,7 +36,7 @@ app.post(
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
-  }),
+  }), reqLimit,
   login,
 );
 app.post(
@@ -46,12 +47,12 @@ app.post(
       password: Joi.string().required().min(8),
       name: Joi.string().required().min(2).max(30),
     }),
-  }),
+  }), reqLimit,
   createUser,
 );
 
-app.use('/articles', auth, articleRouter);
-app.use('/users', auth, userRouter);
+app.use('/articles', auth, reqLimit, articleRouter);
+app.use('/users', auth, reqLimit, userRouter);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Запрашиваемый ресурс не найден'));
