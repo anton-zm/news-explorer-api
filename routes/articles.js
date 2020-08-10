@@ -15,8 +15,7 @@ articleRouter.post(
       link: Joi.string().required(),
       image: Joi.string().required(),
     }),
-  }),
-  createArticle
+  }), createArticle,
 );
 articleRouter.delete('/:articleId', deleteArticle);
 
