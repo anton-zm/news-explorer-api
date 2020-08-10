@@ -5,9 +5,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 
-const articleRouter = require('./routes/articles');
-const usersRoute = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
+const { userRouter, articleRouter } = require('./routes/index.js');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
@@ -51,7 +50,7 @@ app.post(
 );
 
 app.use('/articles', auth, articleRouter);
-app.use('/users', auth, usersRoute);
+app.use('/users', auth, userRouter);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Запрашиваемый ресурс не найден'));
