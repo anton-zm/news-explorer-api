@@ -41,8 +41,8 @@ module.exports.deleteArticle = (req, res, next) => {
         throw new RightsError('Вы не можете удалять чужие статьи');
       }
       return article
-        .findByIdAndDelete(art._id)
-        .then((delArt) => res.send({ data: delArt, message: 'Статья  удалена' }))
+        .deleteOne(art)
+        .then(() => res.send({ message: 'Статья  удалена' }))
         .catch(next);
     })
     .catch(next);
