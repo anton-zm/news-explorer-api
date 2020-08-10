@@ -5,6 +5,7 @@ const BadRequest = require('../errors/bad-req-err');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 const UniqueUserError = require('../errors/unique-user-err');
+const AuthError = require('../errors/auth-err');
 
 module.exports.getMe = (req, res, next) => {
   user
@@ -60,5 +61,5 @@ module.exports.login = (req, res, next) => {
       })
       .catch(next);
   }
-  return res.status(400).send({ message: 'Необходимо ввести пароль' });
+  return next(new AuthError('Необходимо ввести пароль'));
 };
