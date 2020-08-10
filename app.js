@@ -10,6 +10,7 @@ const { userRouter, articleRouter } = require('./routes/index.js');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
+const { errorsCenter } = require('./errors/errorsCenter');
 
 const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/diploma' } = process.env;
 
@@ -59,13 +60,7 @@ app.use((req, res, next) => {
 app.use(errorLogger);
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
-  });
-  next();
-});
+app.use(errorsCenter);
 
 app.listen(PORT, () => {
   console.log(`Приложение запущено на port:${PORT}`);

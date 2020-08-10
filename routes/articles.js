@@ -17,6 +17,10 @@ articleRouter.post(
     }),
   }), createArticle,
 );
-articleRouter.delete('/:articleId', deleteArticle);
+articleRouter.delete('/:articleId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().length(24).hex(),
+  }),
+}), deleteArticle);
 
 module.exports = articleRouter;
