@@ -23,7 +23,7 @@ module.exports.createArticle = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest('Что-то пошло не так...');
+        throw new BadRequest('Ошибка валидации данных');
       } else {
         next(err);
       }
