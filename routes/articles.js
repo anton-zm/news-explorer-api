@@ -23,6 +23,4 @@ articleRouter.delete('/:articleId', celebrate({
   }),
 }), deleteArticle);
 
-// articleRouter.delete('/:articleId', deleteArticle);
-
 module.exports = articleRouter;
