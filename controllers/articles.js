@@ -10,7 +10,7 @@ module.exports.createArticle = (req, res, next) => {
   } = req.body;
   article
     .create({
-      keyword, title, text, date, source, link, image, owner: req.user._id
+      keyword, title, text, date, source, link, image, owner: req.user._id,
     })
     .then((art) => res.send({
       keyword: art.keyword,
