@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -16,6 +17,8 @@ const { reqLimit } = require('./middlewares/rateLimiter');
 const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/diploma' } = process.env;
 
 const app = express();
+
+app.use(cors());
 
 app.use(helmet());
 app.use(bodyParser.json());
@@ -36,8 +39,9 @@ app.post(
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
-  }), reqLimit,
-  login,
+  }),
+  reqLimit,
+  login
 );
 app.post(
   '/signup',
@@ -47,8 +51,9 @@ app.post(
       password: Joi.string().required().min(8),
       name: Joi.string().required().min(2).max(30),
     }),
-  }), reqLimit,
-  createUser,
+  }),
+  reqLimit,
+  createUser
 );
 
 app.use('/articles', auth, reqLimit, articleRouter);
