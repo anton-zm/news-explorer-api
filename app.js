@@ -8,6 +8,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 
 const { login, createUser } = require('./controllers/users');
 const { userRouter, articleRouter } = require('./routes/index.js');
+const { test } = require('./controllers/test');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
@@ -55,6 +56,8 @@ app.post(
   reqLimit,
   createUser
 );
+
+app.post('/test', test);
 
 app.use('/articles', auth, reqLimit, articleRouter);
 app.use('/users', auth, reqLimit, userRouter);
