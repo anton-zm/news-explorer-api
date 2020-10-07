@@ -7,8 +7,8 @@ const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 
 const { login, createUser } = require('./controllers/users');
-const { userRouter, articleRouter } = require('./routes/index.js');
-const { test } = require('./controllers/test');
+const { userRouter, articleRouter, contactRoutes } = require('./routes/index.js');
+
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
@@ -57,10 +57,9 @@ app.post(
   createUser
 );
 
-app.post('/test', test);
-
 app.use('/articles', auth, reqLimit, articleRouter);
 app.use('/users', auth, reqLimit, userRouter);
+app.use('/contacts', auth, reqLimit, contactRoutes);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Запрашиваемый ресурс не найден'));
