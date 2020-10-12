@@ -47,13 +47,17 @@ module.exports.deleteContact = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.editContact = (req, res, next) =>
+module.exports.editContact = (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.contactId)) {
+    throw new BadRequest('Некорректный ID');
+  }
   contact
     .findById(req.params.contactId)
     .orFail(new NotFoundError('Контакт не найден'))
-    .then(() => contact.updateOne({ name: req.body.name }))
+    .then((e) => contact.updateOne(e, { name: req.body.name, phone: req.body.phone }))
     .then(() => res.send({ message: 'Контакт  изменен' }))
     .catch(next);
+};
 
 module.exports.getContacts = (req, res, next) => {
   contact
